@@ -1,0 +1,20 @@
+backend:
+  name: github
+  repo: config.yml # Mfano: mexac/e-commerce-shopeasetz
+  branch: main # Au master kulingana na branch yako kuu
+
+media_folder: "images" # Picha zote mpya utakazopakiza zitaenda hapa
+public_folder: "images"
+
+collections:
+  - name: "products"
+    label: "Bidhaa (Products)"
+    folder: "data/products" # CMS itatengeneza mafaili ya nguo hapa
+    create: true # Inaruhusu kuongeza nguo mpya
+    slug: "{{slug}}"
+    fields:
+      - { label: "Jina la Nguo", name: "title", widget: "string" }
+      - { label: "Bei (Tsh)", name: "price", widget: "number", value_type: "int" }
+      - { label: "Kundi (Category)", name: "category", widget: "select", options: ["Jeans", "Dress", "Shirts", "T-Shirts"] }
+      - { label: "Picha ya Nguo", name: "image", widget: "image" }
+      - { label: "Maelezo ya Ziada", name: "body", widget: "markdown", required: false }
