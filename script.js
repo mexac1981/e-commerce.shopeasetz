@@ -52,6 +52,11 @@ let qvQty           = 1;
 // DOM READY
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // BREKI YA ADMIN: Kama tupo kwenye ukurasa wa admin, simamisha kodi hizi mara moja!
+  if (window.location.pathname.includes('/admin')) {
+    return; 
+  }
+
   initTheme();
   renderCategories();
   renderFilterChips();
@@ -64,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFaq();
   initHeaderScroll();
 });
+
 
 // ============================================================
 // THEME
