@@ -1,16 +1,19 @@
+
 backend:
   name: github
-  repo: config.yml # Mfano: mexac/e-commerce-shopeasetz
-  branch: main # Au master kulingana na branch yako kuu
+  repo: mexac/e-commerce-shopeasetz   # Hakikisha hili jina la mradi liko sahihi kabisa
+  branch: main
+  base_url: https://shopease.co.tz
+  auth_endpoint: /api/auth
 
-media_folder: "images" # Picha zote mpya utakazopakiza zitaenda hapa
+media_folder: "images"
 public_folder: "images"
 
 collections:
   - name: "products"
     label: "Bidhaa (Products)"
-    folder: "data/products" # CMS itatengeneza mafaili ya nguo hapa
-    create: true # Inaruhusu kuongeza nguo mpya
+    folder: "data/products"
+    create: true
     slug: "{{slug}}"
     fields:
       - { label: "Jina la Nguo", name: "title", widget: "string" }
