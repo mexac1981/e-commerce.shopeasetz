@@ -1,23 +1,25 @@
-
 backend:
   name: github
-  repo: mexac/e-commerce-shopeasetz   # Hakikisha hili jina la mradi liko sahihi kabisa
+  repo: mexac1981/e-commerce-shopeasetz
   branch: main
-  base_url: https://shopease.co.tz
-  auth_endpoint: /api/auth
 
-media_folder: "images"
-public_folder: "images"
+media_folder: "img"
+public_folder: "img"
 
 collections:
-  - name: "products"
-    label: "Bidhaa (Products)"
-    folder: "data/products"
-    create: true
-    slug: "{{slug}}"
+  - name: "products_collection"
+    label: "Bidhaa za Duka"
+    label_singular: "Bidhaa"
+    # Hapa tunaiambia Decap itengeneze faili la JSON badala ya kodi za JS au Markdown
+    file: "products.json"
+    extension: "json"
+    format: "json"
     fields:
-      - { label: "Jina la Nguo", name: "title", widget: "string" }
-      - { label: "Bei (Tsh)", name: "price", widget: "number", value_type: "int" }
-      - { label: "Kundi (Category)", name: "category", widget: "select", options: ["Jeans", "Dress", "Shirts", "T-Shirts"] }
-      - { label: "Picha ya Nguo", name: "image", widget: "image" }
-      - { label: "Maelezo ya Ziada", name: "body", widget: "markdown", required: false }
+      - { label: "Jina la Bidhaa", name: "name", widget: "string" }
+      - { label: "ID ya Bidhaa (Mfano: tshirt-nyeusi)", name: "id", widget: "string" }
+      - { label: "Jamii (Category)", name: "category", widget: "select", options: ["phones", "electronics", "watches", "clothing"] }
+      - { label: "Picha ya Bidhaa", name: "img", widget: "image" }
+      - { label: "Bei ya Sasa (TZS)", name: "price", widget: "number", value_type: "int" }
+      - { label: "Bei ya Zamani (Kama ipo)", name: "oldPrice", widget: "number", value_type: "int", required: false }
+      - { label: "Idadi ya Reviews", name: "reviews", widget: "number", value_type: "int", default: 0 }
+      - { label: "Rating (Nyota 1 hadi 5)", name: "rating", widget: "number", value_type: "int", default: 5 }
