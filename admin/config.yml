@@ -3,8 +3,12 @@ backend:
   repo: mexac1981/e-commerce-shopeasetz
   branch: main
   auth_type: implicit
-  # Bandika ile namba uliyokopi kutoka GitHub hapa chini:
-  app_id: "Ov23liagtiQacJNj6xzK"
+  # Badilisha app_id kuwa client_id kama hapa chini:
+  client_id: "Ov23liagtiQacJNj6xzK"
+
+media_folder: "img"
+public_folder: "img"
+
 
 media_folder: "img"
 public_folder: "img"
