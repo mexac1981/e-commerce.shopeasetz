@@ -2,8 +2,8 @@ backend:
   name: github
   repo: mexac1981/e-commerce-shopeasetz
   branch: main
-  # Mstari huu hapa chini ndio mkombozi wetu:
-  base_url: https://decap-cms-oauth-provider.vercel.app
+  # Futa ile link ya Vercel na weka amri hii hapa chini:
+  auth_type: implicit
 
 media_folder: "img"
 public_folder: "img"
