@@ -2,8 +2,9 @@ backend:
   name: github
   repo: mexac1981/e-commerce-shopeasetz
   branch: main
-  # Futa ile link ya Vercel na weka amri hii hapa chini:
   auth_type: implicit
+  # Bandika ile namba uliyokopi kutoka GitHub hapa chini:
+  app_id: "Ov23liagtiQacJNj6xzK"
 
 media_folder: "img"
 public_folder: "img"
