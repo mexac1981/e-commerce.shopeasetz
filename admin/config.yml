@@ -10,8 +10,10 @@ collections:
   - name: "products_collection"
     label: "Bidhaa za Duka"
     label_singular: "Bidhaa"
-    # Hapa tunaiambia Decap itengeneze faili la JSON badala ya kodi za JS au Markdown
-    file: "products.json"
+    # Tunasafisha kosa hapa kwa kuweka folder maalum la data
+    folder: "data"
+    create: true
+    slug: "{{name}}"
     extension: "json"
     format: "json"
     fields:
