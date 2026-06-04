@@ -2,6 +2,8 @@ backend:
   name: github
   repo: mexac1981/e-commerce-shopeasetz
   branch: main
+  # Mstari huu hapa chini ndio mkombozi wetu:
+  base_url: https://decap-cms-oauth-provider.vercel.app
 
 media_folder: "img"
 public_folder: "img"
@@ -10,7 +12,6 @@ collections:
   - name: "products_collection"
     label: "Bidhaa za Duka"
     label_singular: "Bidhaa"
-    # Tunasafisha kosa hapa kwa kuweka folder maalum la data
     folder: "data"
     create: true
     slug: "{{name}}"
