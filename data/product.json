@@ -1,0 +1,22 @@
+[
+  {
+    "id": "tshirt-nyeusi",
+    "name": "T-Shirt Nyeusi ya Kijanja",
+    "category": "clothing",
+    "img": "img/image001.jpg",
+    "price": 25000,
+    "oldPrice": 30000,
+    "reviews": 12,
+    "rating": 5
+  },
+  {
+    "id": "saa-smart",
+    "name": "Saa ya Kidijitali (Smart Watch)",
+    "category": "watches",
+    "img": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
+    "price": 75000,
+    "oldPrice": 85000,
+    "reviews": 8,
+    "rating": 4
+  }
+]
