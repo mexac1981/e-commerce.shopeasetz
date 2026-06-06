@@ -20,7 +20,7 @@ const CATEGORIES = [
   { id: "phones",      name: "Phones & Pads",    icon: "fa-mobile-screen",  img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400" },
   { id: "electronics", name: "Audio & Sound",     icon: "fa-headphones",     img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400" },
   { id: "watches",     name: "Watches",           icon: "fa-clock",          img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" },
-  { id: "clothing",     name: "clothing",           icon: "fa-shirt",          img: "img/image001.jpg" },
+  { id: "clothing",    name: "clothing",          icon: "fa-shirt",          img: "img/image001.jpg" },
 ];
 
 const WHATSAPP_NUMBER = "255680515787";
@@ -28,7 +28,7 @@ const WHATSAPP_NUMBER = "255680515787";
 // ============================================================
 // APP STATE (Sasa hivi PRODUCTS inasomwa kutoka Decap CMS JSON)
 // ============================================================
-let PRODUCTS   = []; // Hapa itajazwa data ikitoka kwenye products.json
+let PRODUCTS   = []; // Hapa itajazwa data ikitoka kwenye product.json
 let cart       = JSON.parse(localStorage.getItem('se_cart'))     || [];
 let wishlist   = JSON.parse(localStorage.getItem('se_wishlist')) || [];
 let currentCategory = 'all';
@@ -49,22 +49,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderCategories();
   renderFilterChips();
   
-  // --- KULAINISHA UBONGO: Vuta Bidhaa kutoka kwenye data/products.json ---
+  // --- KULAINISHA UBONGO: Vuta Bidhaa kutoka kwenye data/product.json ---
   try {
     const response = await fetch('/data/product.json');
-
     if (!response.ok) {
       throw new Error(`Haijaweza kupata faili la JSON: HTTP ${response.status}`);
     }
     PRODUCTS = await response.json();
     console.log("✅ Bidhaa zimepakiwa kutoka Decap JSON salama!", PRODUCTS);
   } catch (error) {
-    console.error("⚠️ Shida imetokea kusoma data za Decap CMS. Hakikisha data/products.json ipo:", error);
-    // Kama kuna error, tunatengeneza Array ya dharura duka lisizime kabisa
+    console.error("⚠️ Shida imetokea kusoma data za Decap CMS. Hakikisha data/product.json ipo:", error);
     PRODUCTS = []; 
   }
 
-  // Baada ya bidhaa kupatikana, sasa duka linawaka rasmi
+  // Baada ya bidhaa kupatikana, duka linawaka rasmi
   renderProducts();
   updateCartBadge();
   setupEventListeners();
@@ -227,7 +225,6 @@ function addToCart(productId) {
   showToast(`<i class="fa-solid fa-check"></i> ${product.name} added to cart`);
 }
 
-// Hakikisha hesabu ya kuhesabu muda ipo ili isivunje kodi ya mwanzo
 function initCountdown(duration) {
   const timerEl = document.getElementById('countdownTimer');
   if (!timerEl) return;
@@ -572,7 +569,7 @@ function setupEventListeners() {
   document.getElementById('cartButton')?.addEventListener('click', () => {
     renderCartItems();
     document.getElementById('cartSidebar')?.classList.add('open');
-    document.getElementById('overlay')?.add('show');
+    document.getElementById('overlay')?.classList.add('show');
   });
 
   document.getElementById('closeCart')?.addEventListener('click', closeAllModals);
