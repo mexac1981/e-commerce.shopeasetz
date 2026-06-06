@@ -11,15 +11,21 @@ public_folder: "img"
 collections:
   - name: "products_collection"
     label: "Bidhaa za Duka"
-    label_singular: "Bidhaa"
-    file: "data/product.json"
-    format: "json"
-    fields:
-      - { label: "ID ya Bidhaa", name: "id", widget: "string" }
-      - { label: "Jina la Bidhaa", name: "name", widget: "string" }
-      - { label: "Kundi (Category)", name: "category", widget: "select", options: ["phones", "electronics", "watches", "clothing"] }
-      - { label: "Picha (Image Path)", name: "img", widget: "string" }
-      - { label: "Bei ya Sasa", name: "price", widget: "number", value_type: "int" }
-      - { label: "Bei ya Zamani", name: "oldPrice", widget: "number", value_type: "int" }
-      - { label: "Idadi ya Reviews", name: "reviews", widget: "number", value_type: "int" }
-      - { label: "Nyota (Rating 1-5)", name: "rating", widget: "number", value_type: "int" }
+    files:
+      - name: "products_file"
+        label: "Orodha ya Bidhaa"
+        file: "data/product.json"
+        file_kind: "json"
+        fields:
+          - label: "Bidhaa zote"
+            name: "products"
+            widget: "list"
+            fields:
+              - { label: "ID ya Bidhaa", name: "id", widget: "string" }
+              - { label: "Jina la Bidhaa", name: "name", widget: "string" }
+              - { label: "Kundi (Category)", name: "category", widget: "select", options: ["phones", "electronics", "watches", "clothing"] }
+              - { label: "Picha (Image Path)", name: "img", widget: "string" }
+              - { label: "Bei ya Sasa", name: "price", widget: "number", value_type: "int" }
+              - { label: "Bei ya Zamani", name: "oldPrice", widget: "number", value_type: "int" }
+              - { label: "Idadi ya Reviews", name: "reviews", widget: "number", value_type: "int" }
+              - { label: "Nyota (Rating 1-5)", name: "rating", widget: "number", value_type: "int" }
