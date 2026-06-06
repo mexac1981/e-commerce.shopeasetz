@@ -1,46 +1,34 @@
 /**
  * ShopEase — Premium Delivery Ecommerce
  * Year: 2026 | Built for Tanzania Market
- * 
- * SMS INTEGRATION: Africa's Talking API
+ * * SMS INTEGRATION: Africa's Talking API
  * When a customer places an order via WhatsApp form,
  * an SMS confirmation is sent to the customer's phone number.
- * 
- * ⚠️  SETUP REQUIRED:
- * 1. Sign up at https://africastalking.com
- * 2. Get your API Key and Username
- * 3. Replace the values in SMS_CONFIG below
- * 4. For production, proxy through your own backend to keep keys safe
  */
 
 // ============================================================
 // SMS CONFIGURATION — Africa's Talking
 // ============================================================
 const SMS_CONFIG = {
-  // ⬇️  Replace with your actual Africa's Talking credentials
-  apiKey:    "YOUR_AFRICASTALKING_API_KEY",     // e.g. "atsk_xxxxxxxxxx"
-  username:  "YOUR_AT_USERNAME",                // e.g. "shopease" or "sandbox" for testing
-  senderId:  "ShopEase",                        // Short sender name (max 11 chars)
-  
-  // Africa's Talking API endpoint
-  // Use sandbox URL while testing: "https://api.sandbox.africastalking.com/version1/messaging"
+  apiKey:    "YOUR_AFRICASTALKING_API_KEY",     
+  username:  "YOUR_AT_USERNAME",                
+  senderId:  "ShopEase",                        
   apiUrl:    "https://api.africastalking.com/version1/messaging",
 };
-
-
 
 const CATEGORIES = [
   { id: "phones",      name: "Phones & Pads",    icon: "fa-mobile-screen",  img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400" },
   { id: "electronics", name: "Audio & Sound",     icon: "fa-headphones",     img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400" },
   { id: "watches",     name: "Watches",           icon: "fa-clock",          img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" },
- { id: "clothing",     name: "clothing",           icon: "fa-shirt",          img: "img/image001.jpg" },
+  { id: "clothing",     name: "clothing",           icon: "fa-shirt",          img: "img/image001.jpg" },
 ];
 
 const WHATSAPP_NUMBER = "255680515787";
 
 // ============================================================
-// APP STATE
+// APP STATE (Sasa hivi PRODUCTS inasomwa kutoka Decap CMS JSON)
 // ============================================================
+let PRODUCTS   = []; // Hapa itajazwa data ikitoka kwenye products.json
 let cart       = JSON.parse(localStorage.getItem('se_cart'))     || [];
 let wishlist   = JSON.parse(localStorage.getItem('se_wishlist')) || [];
 let currentCategory = 'all';
@@ -49,9 +37,9 @@ let qvCurrentId     = null;
 let qvQty           = 1;
 
 // ============================================================
-// DOM READY
+// DOM READY & DATA FETCHING FROM DECAP CMS
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // BREKI YA ADMIN: Kama tupo kwenye ukurasa wa admin, simamisha kodi hizi mara moja!
   if (window.location.pathname.includes('/admin')) {
     return; 
@@ -60,6 +48,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   renderCategories();
   renderFilterChips();
+  
+  // --- KULAINISHA UBONGO: Vuta Bidhaa kutoka kwenye data/products.json ---
+  try {
+    const response = await fetch('/data/products.json');
+    if (!response.ok) {
+      throw new Error(`Haijaweza kupata faili la JSON: HTTP ${response.status}`);
+    }
+    PRODUCTS = await response.json();
+    console.log("✅ Bidhaa zimepakiwa kutoka Decap JSON salama!", PRODUCTS);
+  } catch (error) {
+    console.error("⚠️ Shida imetokea kusoma data za Decap CMS. Hakikisha data/products.json ipo:", error);
+    // Kama kuna error, tunatengeneza Array ya dharura duka lisizime kabisa
+    PRODUCTS = []; 
+  }
+
+  // Baada ya bidhaa kupatikana, sasa duka linawaka rasmi
   renderProducts();
   updateCartBadge();
   setupEventListeners();
@@ -220,6 +224,21 @@ function addToCart(productId) {
   saveCart();
   updateCartBadge();
   showToast(`<i class="fa-solid fa-check"></i> ${product.name} added to cart`);
+}
+
+// Hakikisha hesabu ya kuhesabu muda ipo ili isivunje kodi ya mwanzo
+function initCountdown(duration) {
+  const timerEl = document.getElementById('countdownTimer');
+  if (!timerEl) return;
+  let targetTime = Date.now() + duration;
+  setInterval(() => {
+    let diff = targetTime - Date.now();
+    if (diff <= 0) diff = 0;
+    let hours = Math.floor(diff / (1000 * 60 * 60));
+    let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    let secs = Math.floor((diff % (1000 * 60)) / 1000);
+    timerEl.textContent = `${hours}h : ${mins}m : ${secs}s`;
+  }, 1000);
 }
 
 function changeCartQty(productId, delta) {
@@ -388,7 +407,6 @@ function openOrderModal() {
       <span>${names} — <strong>TZS ${total.toLocaleString()}</strong></span>`;
   }
 
-  // Close cart sidebar first
   document.getElementById('cartSidebar')?.classList.remove('open');
   openModal('orderModal');
 }
@@ -409,7 +427,6 @@ async function handleOrderSubmission(e) {
     return;
   }
 
-   // ── Build WhatsApp message ──────────────────────────────
   let total = 0;
   let msg   = `*🛒 NEW ORDER — ShopEase*\n\n`;
   msg += `👤 *Customer:* ${name}\n`;
@@ -423,12 +440,9 @@ async function handleOrderSubmission(e) {
     total += sub;
     msg += `${i + 1}. ${item.name} ×${item.quantity} — TZS ${sub.toLocaleString()}\n`;
     
-    // Check if the image is a full URL or a local file
     if (item.img.startsWith('http')) {
       msg += `   🖼️ Image: ${item.img}\n`;
     } else {
-      // If it's a local image (like "blue.jpg"), provide your live domain link
-      // Replace 'shopease.co.tz' with your actual website domain
       msg += `   🖼️ Image: https://shopease.co.tz/${item.img}\n`;
     }
   });
@@ -437,32 +451,24 @@ async function handleOrderSubmission(e) {
   msg += `_Payment: Cash on Delivery. Pay after inspection._\n`;
   msg += `_ShopEase — Premium Delivery, Tanzania_`;
 
-
-
-  // ── Open WhatsApp ───────────────────────────────────────
   const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(waUrl, '_blank');
 
-  // ── Send SMS Confirmation ───────────────────────────────
   const smsText = buildSmsText(name, total);
   const normalizedPhone = normalizePhone(phone);
 
   sendSmsConfirmation(normalizedPhone, smsText);
 
-  // ── Show success, reset ─────────────────────────────────
   closeAllModals();
   document.getElementById('orderForm')?.reset();
   cart = [];
   saveCart();
   updateCartBadge();
 
-  // Show success overlay
-  document.getElementById('smsConfirm').style.display = 'flex';
+  const smsOverlay = document.getElementById('smsConfirm');
+  if (smsOverlay) smsOverlay.style.display = 'flex';
 }
 
-/**
- * Build the SMS text that goes to the customer
- */
 function buildSmsText(customerName, totalAmount) {
   return (
     `Hi ${customerName}! Your ShopEase order (TZS ${totalAmount.toLocaleString()}) ` +
@@ -471,10 +477,6 @@ function buildSmsText(customerName, totalAmount) {
   );
 }
 
-/**
- * Normalize Tanzanian phone numbers to international format
- * e.g. "0712345678" → "+255712345678"
- */
 function normalizePhone(phone) {
   phone = phone.replace(/\s+/g, '').replace(/[-()]/g, '');
   if (phone.startsWith('0')) return '+255' + phone.slice(1);
@@ -483,48 +485,16 @@ function normalizePhone(phone) {
   return phone;
 }
 
-/**
- * Send SMS via Africa's Talking API
- * 
- * ⚠️  IMPORTANT — CORS & SECURITY NOTE:
- * Direct browser-to-API calls to Africa's Talking will be blocked by CORS in production.
- * The correct approach is to call YOUR OWN backend endpoint (e.g. /api/send-sms),
- * which then calls Africa's Talking server-side with your secret key.
- * 
- * For TESTING with the sandbox, you can use the Africa's Talking simulator.
- * Replace apiUrl with the sandbox URL in SMS_CONFIG.
- * 
- * Example backend (Node.js/Express):
- *   app.post('/api/send-sms', async (req, res) => {
- *     const AT = require('africastalking')({ apiKey, username });
- *     await AT.SMS.send({ to: [req.body.to], message: req.body.message, from: 'ShopEase' });
- *     res.json({ success: true });
- *   });
- */
 async function sendSmsConfirmation(phoneNumber, message) {
-  // ── Check if credentials are configured ──────────────────
   if (
     SMS_CONFIG.apiKey === "YOUR_AFRICASTALKING_API_KEY" ||
     SMS_CONFIG.username === "YOUR_AT_USERNAME"
   ) {
-    console.warn(
-      "📱 SMS not sent: Africa's Talking credentials not configured.\n" +
-      "Edit SMS_CONFIG in script.js with your real API key and username.\n" +
-      "Visit https://africastalking.com to get started."
-    );
-    console.info("📱 SMS would have been sent to:", phoneNumber);
-    console.info("📱 SMS content:", message);
+    console.warn("📱 SMS not sent: Africa's Talking credentials not configured.");
     return;
   }
 
   try {
-    /**
-     * Option A: Direct API call (works in server-side environments / Node.js)
-     *           Will be blocked by CORS if called from a browser directly.
-     * 
-     * Option B (Recommended for browser): Replace the URL below with your own
-     *           backend endpoint, e.g. "https://yourapi.com/send-sms"
-     */
     const formData = new URLSearchParams();
     formData.append('username', SMS_CONFIG.username);
     formData.append('to',       phoneNumber);
@@ -541,15 +511,10 @@ async function sendSmsConfirmation(phoneNumber, message) {
       body: formData.toString(),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json();
     console.info('✅ SMS sent successfully:', result);
-
   } catch (err) {
-    // Silently fail on CORS / network issues — the WhatsApp order still went through
     console.warn('⚠️ SMS send failed (non-critical):', err.message);
   }
 }
@@ -576,15 +541,12 @@ function closeAllModals() {
 // EVENT LISTENERS
 // ============================================================
 function setupEventListeners() {
-  // Theme
   document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
 
-  // Mobile menu
   document.getElementById('menuToggle')?.addEventListener('click', () => {
     document.getElementById('navLinks')?.classList.toggle('open');
   });
 
-  // Search toggle
   document.getElementById('searchToggle')?.addEventListener('click', (e) => {
     e.stopPropagation();
     const dd = document.getElementById('searchDropdown');
@@ -606,33 +568,23 @@ function setupEventListeners() {
     renderProducts();
   });
 
-  // Cart open
   document.getElementById('cartButton')?.addEventListener('click', () => {
     renderCartItems();
     document.getElementById('cartSidebar')?.classList.add('open');
-    document.getElementById('overlay')?.classList.add('show');
+    document.getElementById('overlay')?.add('show');
   });
 
-  // Cart close
   document.getElementById('closeCart')?.addEventListener('click', closeAllModals);
-
-  // Overlay click
   document.getElementById('overlay')?.addEventListener('click', closeAllModals);
-
-  // Checkout button
   document.getElementById('checkoutButton')?.addEventListener('click', openOrderModal);
-
-  // Order form submit
   document.getElementById('orderForm')?.addEventListener('submit', handleOrderSubmission);
 
-  // Back to top
   const backTop = document.getElementById('backTop');
   window.addEventListener('scroll', () => {
     if (backTop) backTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
   });
   backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-  // Nav active link on scroll
   window.addEventListener('scroll', highlightNavOnScroll, { passive: true });
 }
 
@@ -653,8 +605,6 @@ function showToast(htmlMsg) {
     setTimeout(() => t.remove(), 300);
   }, 3200);
 }
-
-
 
 // ============================================================
 // SCROLL REVEAL
@@ -683,6 +633,7 @@ function initLiveOrders() {
   const places  = ["Kinondoni", "Temeke", "Ilala", "Mwenge", "Sinza", "Posta", "Mikocheni", "Kariakoo"];
 
   setInterval(() => {
+    if (PRODUCTS.length === 0) return; // Linda isilete kosa kama hakuna bidhaa bado
     const name = names[Math.floor(Math.random() * names.length)];
     const loc  = places[Math.floor(Math.random() * places.length)];
     const prod = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
