@@ -3,12 +3,7 @@ backend:
   repo: mexac1981/e-commerce-shopeasetz
   branch: main
   auth_type: implicit
-  # Badilisha app_id kuwa client_id kama hapa chini:
-  client_id: "Ov23liagtiQacJNj6xzK"
-
-media_folder: "img"
-public_folder: "img"
-
+  app_id: "Ov23liagtiQacJNj6xzK"
 
 media_folder: "img"
 public_folder: "img"
@@ -17,17 +12,14 @@ collections:
   - name: "products_collection"
     label: "Bidhaa za Duka"
     label_singular: "Bidhaa"
-    folder: "data"
-    create: true
-    slug: "{{name}}"
-    extension: "json"
+    file: "data/product.json"
     format: "json"
     fields:
+      - { label: "ID ya Bidhaa", name: "id", widget: "string" }
       - { label: "Jina la Bidhaa", name: "name", widget: "string" }
-      - { label: "ID ya Bidhaa (Mfano: tshirt-nyeusi)", name: "id", widget: "string" }
-      - { label: "Jamii (Category)", name: "category", widget: "select", options: ["phones", "electronics", "watches", "clothing"] }
-      - { label: "Picha ya Bidhaa", name: "img", widget: "image" }
-      - { label: "Bei ya Sasa (TZS)", name: "price", widget: "number", value_type: "int" }
-      - { label: "Bei ya Zamani (Kama ipo)", name: "oldPrice", widget: "number", value_type: "int", required: false }
-      - { label: "Idadi ya Reviews", name: "reviews", widget: "number", value_type: "int", default: 0 }
-      - { label: "Rating (Nyota 1 hadi 5)", name: "rating", widget: "number", value_type: "int", default: 5 }
+      - { label: "Kundi (Category)", name: "category", widget: "select", options: ["phones", "electronics", "watches", "clothing"] }
+      - { label: "Picha (Image Path)", name: "img", widget: "string" }
+      - { label: "Bei ya Sasa", name: "price", widget: "number", value_type: "int" }
+      - { label: "Bei ya Zamani", name: "oldPrice", widget: "number", value_type: "int" }
+      - { label: "Idadi ya Reviews", name: "reviews", widget: "number", value_type: "int" }
+      - { label: "Nyota (Rating 1-5)", name: "rating", widget: "number", value_type: "int" }
