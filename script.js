@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // --- KULAINISHA UBONGO: Vuta Bidhaa kutoka kwenye data/products.json ---
   try {
-    const response = await fetch('/data/products.json');
+    const response = await fetch('/data/product.json');
     if (!response.ok) {
       throw new Error(`Haijaweza kupata faili la JSON: HTTP ${response.status}`);
     }
